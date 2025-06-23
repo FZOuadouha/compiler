@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Language Code Compiler</title>
+    <style>
+        :root {
+            --primary: #4a6bff;
+            --secondary: #6c757d;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), #6a11cb);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .compiler-tabs {
+            display: flex;
+            background: white;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            background-color: var(--light);
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .tab:hover:not(.active) {
+            background-color: rgba(74, 107, 255, 0.1);
+        }
+        
+        .compiler-container {
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .editor-container {
+            display: none;
+            padding: 1rem;
+        }
+        
+        .editor-container.active {
+            display: block;
+        }
+        
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .editor-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .run-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .run-btn:hover {
+            background-color: #3a5bff;
+        }
+        
+        .code-editor {
+            width: 100%;
+            min-height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            resize: vertical;
+            background-color: #f8f9fa;
+        }
+        
+        .output-container {
+            margin-top: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            min-height: 150px;
+        }
+        
+        .output-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .output-content {
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            background-color: var(--dark);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .compiler-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1 0 50%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Multi-Language Code Compiler</h1>
+        <p>Write, run, and test code in 5 different languages</p>
+    </header>
+    
+    <div class="container">
+        <div class="compiler-tabs">
+            <div class="tab active" data-tab="html">HTML</div>
+            <div class="tab" data-tab="css">CSS</div>
+            <div class="tab" data-tab="js">JavaScript</div>
+            <div class="tab" data-tab="python">Python</div>
+            <div class="tab" data-tab="markdown">Markdown</div>
+        </div>
+        
+        <div class="compiler-container">
+            <!-- HTML Compiler -->
+            <div class="editor-container active" id="html-editor">
+                <div class="editor-header">
+                    <div class="editor-title">HTML Editor</div>
+                    <button class="run-btn" onclick="runCode('html')">Run HTML</button>
+                </div>
+                <textarea class="code-editor" id="html-code" placeholder="Enter your HTML code here...">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;My Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Hello World!&lt;/h1&gt;
+    &lt;p&gt;This is HTML output.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+                <div class="output-container">
+                    <div class="output-title">Output</div>
+                    <div class="output-content" id="html-output"></div>
+                </div>
+            </div>
+            
+            <!-- CSS Compiler -->
+            <div class="editor-container" id="css-editor">
+                <div class="editor-header">
+                    <div class="editor-title">CSS Editor</div>
+                    <button class="run-btn" onclick="runCode('css')">Run CSS</button>
+                </div>
+                <textarea class="code-editor" id="css-code" placeholder="Enter your CSS code here...">body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 20px;
+}
+
+h1 {
+    color: #4a6bff;
+}</textarea>
+                <div class="output-container">
+                    <div class="output-title">Output</div>
+                    <div class="output-content" id="css-output"></div>
+                </div>
+            </div>
+            
+            <!-- JavaScript Compiler -->
+            <div class="editor-container" id="js-editor">
+                <div class="editor-header">
+                    <div class="editor-title">JavaScript Editor</div>
+                    <button class="run-btn" onclick="runCode('js')">Run JavaScript</button>
+                </div>
+                <textarea class="code-editor" id="js-code" placeholder="Enter your JavaScript code here...">// Simple JavaScript example
+function greet(name) {
+    return `Hello, ${name}!`;
+}
+
+const message = greet('World');
+console.log(message);
+message;</textarea>
+                <div class="output-container">
+                    <div class="output-title">Output</div>
+                    <div class="output-content" id="js-output"></div>
+                </div>
+            </div>
+            
+            <!-- Python Compiler -->
+            <div class="editor-container" id="python-editor">
+                <div class="editor-header">
+                    <div class="editor-title">Python Editor</div>
+                    <button class="run-btn" onclick="runCode('python')">Run Python</button>
+                </div>
+                <textarea class="code-editor" id="python-code" placeholder="Enter your Python code here..."># Simple Python example
+def greet(name):
+    return f"Hello, {name}!"
+
+message = greet("World")
+print(message)
+message</textarea>
+                <div class="output-container">
+                    <div class="output-title">Output</div>
+                    <div class="output-content" id="python-output"></div>
+                </div>
+            </div>
+            
+            <!-- Markdown Compiler -->
+            <div class="editor-container" id="markdown-editor">
+                <div class="editor-header">
+                    <div class="editor-title">Markdown Editor</div>
+                    <button class="run-btn" onclick="runCode('markdown')">Run Markdown</button>
+                </div>
+                <textarea class="code-editor" id="markdown-code" placeholder="Enter your Markdown code here..."># Markdown Example
+
+This is a **Markdown** document.
+
+## Features:
+- Easy to write
+- Simple syntax
+- Converts to HTML
+
